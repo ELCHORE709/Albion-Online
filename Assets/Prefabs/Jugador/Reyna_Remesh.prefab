@@ -33,7 +33,8 @@ Transform:
   m_LocalPosition: {x: 642.93353, y: 0.55, z: 416.63}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 635522378307274273}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5740229508335647181
@@ -151,7 +152,41 @@ MonoBehaviour:
   rangoDisparo: 8
   rangoAlerta: 10
   rangoPersecucionMaxima: 8
+  distanciaMinimaSegura: 5
   proyectilPrefab: {fileID: 1271145198728218979, guid: 43e781e5191f6f94d8a68e19049c51da, type: 3}
-  basePropia: {fileID: 4569393541734260330, guid: 63cf08285cfc5c04ca8e43659ebd2d71, type: 3}
+  basePropia: {fileID: 3562110755745031129, guid: efc23987f08da85438c7a3ddc2af988f, type: 3}
+  baseEnemiga: {fileID: 3562110755745031129, guid: 4cba2e9d06b8343429939feb8df9804b, type: 3}
+  puntoDisparo: {fileID: 635522378307274273}
   esJugador: 1
   estadoActual: 2
+--- !u!1 &1666978149958069145
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 635522378307274273}
+  m_Layer: 0
+  m_Name: Punto_Disparo
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &635522378307274273
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666978149958069145}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.00387, z: -0}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4355535995136609266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

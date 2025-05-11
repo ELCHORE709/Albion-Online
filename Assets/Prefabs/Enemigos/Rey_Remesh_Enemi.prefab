@@ -147,7 +147,10 @@ MonoBehaviour:
   vida: 250
   "da\xF1o": 8
   velocidad: 2
-  rango: 1.5
-  rangoDeteccion: 10
+  rangoAtaque: 1.5
+  rangoAlerta: 10
+  rangoPersecucionMaxima: 8
+  basePropia: {fileID: 3562110755745031129, guid: 4cba2e9d06b8343429939feb8df9804b, type: 3}
+  baseEnemiga: {fileID: 3562110755745031129, guid: efc23987f08da85438c7a3ddc2af988f, type: 3}
   esJugador: 0
-  estadoActual: 2
+  estadoActual: 1

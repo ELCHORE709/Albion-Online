@@ -1,16 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AI;
 
 public class Reina : MonoBehaviour
 {
     public float vida = 80f;
-    public float daño = 20f;
+    public float daÃ±o = 20f;
     public float velocidad = 3f;
     public float rangoDisparo = 8f;
     public float rangoAlerta = 10f;
     public float rangoPersecucionMaxima = 8f;
+    public float distanciaMinimaSegura = 5f;
     public GameObject proyectilPrefab;
     public GameObject basePropia;
+    public GameObject baseEnemiga;
+    public Transform puntoDisparo;
     public bool esJugador = false;
     public EstadoUnidad estadoActual = EstadoUnidad.Defensa;
 
@@ -26,43 +29,69 @@ public class Reina : MonoBehaviour
         agent.speed = velocidad;
         InvokeRepeating(nameof(DetectarObjetivo), 0f, 1f);
         InvokeRepeating(nameof(Disparar), 0.5f, 1f);
+
+        if (!esJugador && baseEnemiga == null)
+        {
+            foreach (var b in GameObject.FindGameObjectsWithTag("Base"))
+            {
+                if (b.GetComponent<Base>().esJugador)
+                {
+                    baseEnemiga = b;
+                    break;
+                }
+            }
+        }
     }
 
     void Update()
     {
         if (estadoActual == EstadoUnidad.Defensa) return;
 
-        if (estadoActual == EstadoUnidad.Patrulla && !esJugador)
+        if ((estadoActual == EstadoUnidad.Ataque || estadoActual == EstadoUnidad.Patrulla) && objetivo != null)
         {
-            if (objetivo == null && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
+            float dist = Vector3.Distance(transform.position, objetivo.transform.position);
+
+            if (estadoActual == EstadoUnidad.Patrulla && dist > rangoPersecucionMaxima)
             {
-                Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
-                agent.SetDestination(destino);
-                tiempoProximaPatrulla = Time.time + tiempoEspera;
+                objetivo = null;
+                agent.SetDestination(ObtenerPuntoCercaDeBase(rangoPatrulla));
+                return;
             }
 
-            if (objetivo != null)
+            if (dist > rangoDisparo)
             {
-                float dist = Vector3.Distance(transform.position, objetivo.transform.position);
-                if (dist <= rangoDisparo)
-                    agent.SetDestination(objetivo.transform.position);
-                else if (dist > rangoPersecucionMaxima)
-                {
-                    objetivo = null;
-                    agent.SetDestination(ObtenerPuntoCercaDeBase(rangoPatrulla));
-                }
+                agent.SetDestination(objetivo.transform.position);
+            }
+            else if (dist < distanciaMinimaSegura)
+            {
+                Vector3 alejamiento = (transform.position - objetivo.transform.position).normalized;
+                Vector3 nuevoDestino = transform.position + alejamiento * 3f;
+                agent.SetDestination(nuevoDestino);
+            }
+            else
+            {
+                agent.ResetPath();
             }
         }
-
-        if (estadoActual == EstadoUnidad.Ataque && objetivo != null)
+        else if (estadoActual == EstadoUnidad.Patrulla && !esJugador && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
         {
-            agent.SetDestination(objetivo.transform.position);
+            Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
+            agent.SetDestination(destino);
+            tiempoProximaPatrulla = Time.time + tiempoEspera;
+        }
+
+        if (estadoActual == EstadoUnidad.Ataque && objetivo == null && baseEnemiga != null)
+        {
+            agent.SetDestination(baseEnemiga.transform.position);
         }
     }
 
     void DetectarObjetivo()
     {
         if (estadoActual == EstadoUnidad.Defensa || objetivo != null) return;
+
+        GameObject masCercano = null;
+        float minDist = Mathf.Infinity;
 
         foreach (var obj in GameObject.FindGameObjectsWithTag("Unidad"))
         {
@@ -76,11 +105,16 @@ public class Reina : MonoBehaviour
             if (!enemigo) continue;
 
             float dist = Vector3.Distance(transform.position, obj.transform.position);
-            if (dist <= rangoAlerta)
+            if (dist <= rangoAlerta && dist < minDist)
             {
-                objetivo = obj;
-                break;
+                masCercano = obj;
+                minDist = dist;
             }
+        }
+
+        if (masCercano != null)
+        {
+            objetivo = masCercano;
         }
     }
 
@@ -92,8 +126,10 @@ public class Reina : MonoBehaviour
         if (dist <= rangoDisparo)
         {
             Vector3 dir = (objetivo.transform.position - transform.position).normalized;
-            GameObject bala = Instantiate(proyectilPrefab, transform.position + dir, Quaternion.identity);
-            bala.GetComponent<Proyectil>().Inicializar(dir, daño, objetivo);
+            Vector3 spawnPos = puntoDisparo != null ? puntoDisparo.position : transform.position + dir;
+
+            GameObject bala = Instantiate(proyectilPrefab, spawnPos, Quaternion.identity);
+            bala.GetComponent<Proyectil>().Inicializar(dir, daÃ±o, objetivo);
         }
     }
 
@@ -110,12 +146,21 @@ public class Reina : MonoBehaviour
     {
         if (!esJugador) return;
         estadoActual = nuevoEstado;
-        Debug.Log($"{gameObject.name} cambió a estado: {estadoActual}");
+        Debug.Log($"{gameObject.name} cambiÃ³ a estado: {estadoActual}");
     }
 
-    public void RecibirDaño(float cantidad)
+    public void RecibirDaÃ±o(float cantidad)
     {
         vida -= cantidad;
-        if (vida <= 0) Destroy(gameObject);
+        if (vida <= 0)
+        {
+            var controlador = FindObjectOfType<Controlador_Interaccion>();
+            if (controlador != null)
+            {
+                controlador.unidadesSeleccionadas.Remove(gameObject);
+            }
+
+            Destroy(gameObject);
+        }
     }
 }

@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2216598504031291092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9008898623232082754}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9008898623232082754
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216598504031291092}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.54158074, y: 0.45444012, z: 0.45459878, w: 0.5417698}
+  m_LocalPosition: {x: 0.0025, y: 0.0356, z: -0.0701}
+  m_LocalScale: {x: 0.009999998, y: 0.009999998, z: 0.009999998}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8990797729034584884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3562110755745031129
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8990797729034584884}
+  - component: {fileID: 9088023183180683742}
+  - component: {fileID: 1638264963109441485}
+  - component: {fileID: 5882881704966497150}
+  - component: {fileID: 2030816767257323640}
+  - component: {fileID: 6926072322807870138}
+  m_Layer: 0
+  m_Name: Torre_Enemigo
+  m_TagString: Base
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8990797729034584884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.54158074, y: -0.45444012, z: -0.45459878, w: 0.5417698}
+  m_LocalPosition: {x: 625.9, y: 7.4, z: 407.6}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9008898623232082754}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: -80}
+--- !u!33 &9088023183180683742
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  m_Mesh: {fileID: -1277366460620338370, guid: 698001ccbc48b3f478aa84133c7c7f23, type: 3}
+--- !u!23 &1638264963109441485
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b6e049a2fcf1b3f43b0f0954b5a43194, type: 2}
+  - {fileID: 2100000, guid: 27d49a3cf08371a46ae0819fc87a28e9, type: 2}
+  - {fileID: 2100000, guid: f2bc20e49e6a2d646b5e885766889c63, type: 2}
+  - {fileID: 2100000, guid: f54187abd46252547b00792975a3784a, type: 2}
+  - {fileID: 593746030359373531, guid: 698001ccbc48b3f478aa84133c7c7f23, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5882881704966497150
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1277366460620338370, guid: 698001ccbc48b3f478aa84133c7c7f23, type: 3}
+--- !u!208 &2030816767257323640
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.024, y: 0.024, z: 0.097}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0.022000002}
+  m_TimeToStationary: 0.5
+--- !u!114 &6926072322807870138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562110755745031129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451f2dac919d2c54d9a1b37e6c04aa4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vida: 1000
+  esJugador: 0
+  puntoSpawn: {fileID: 9008898623232082754}
+  tiempoEntreUnidades: 5
+  limiteUnidades: 30
+  prefabRey: {fileID: 8022397174914745471, guid: 90a02b3b18929e84e8fa21d6aa66aad9, type: 3}
+  prefabAlfil: {fileID: 3813058831429308132, guid: 3d8c7e475cd07e546844c71dd591f121, type: 3}
+  prefabReina: {fileID: 1647667103333548275, guid: ba6ced0989fd36a4c9f672ce88834ebd, type: 3}
+  prefabsEnemigo:
+  - {fileID: 1647667103333548275, guid: ba6ced0989fd36a4c9f672ce88834ebd, type: 3}
+  - {fileID: 8022397174914745471, guid: 90a02b3b18929e84e8fa21d6aa66aad9, type: 3}
+  - {fileID: 3813058831429308132, guid: 3d8c7e475cd07e546844c71dd591f121, type: 3}
+  panelBotones: {fileID: 0}
+  botonCrearRey: {fileID: 0}
+  botonCrearAlfil: {fileID: 0}
+  botonCrearReina: {fileID: 0}

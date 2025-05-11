@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using UnityEngine.EventSystems; // ✅ Para detectar clics sobre UI
 
 public class Controlador_Interaccion : MonoBehaviour
 {
@@ -61,7 +62,7 @@ public class Controlador_Interaccion : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame)
             CambiarEstadoSeleccionados(EstadoUnidad.Defensa);
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !Keyboard.current.shiftKey.isPressed)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !Keyboard.current.shiftKey.isPressed && !EventSystem.current.IsPointerOverGameObject())
         {
             seleccionando = true;
             inicioCaja = Mouse.current.position.ReadValue();
@@ -89,6 +90,8 @@ public class Controlador_Interaccion : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext context)
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return; // ✅ Bloquear selección si se hizo clic en UI
+
         if (Time.time - tiempoUltimoClick < delayClick)
         {
             Debug.Log("⛔ Ignorando clic duplicado (demasiado rápido)");
@@ -127,6 +130,8 @@ public class Controlador_Interaccion : MonoBehaviour
 
     private void OnMoverClick(InputAction.CallbackContext context)
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return; // ✅ Bloquear movimiento si se hizo clic en UI
+
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
         {
@@ -145,17 +150,30 @@ public class Controlador_Interaccion : MonoBehaviour
         }
     }
 
-
     private void SeleccionarUnidad(GameObject unidad)
     {
         unidadesSeleccionadas.Add(unidad);
         ModificarEscalaMaterial(unidad, escalaSeleccionada);
+
+        if (unidad.TryGetComponent<Base>(out var baseScript))
+        {
+            baseScript.MostrarUI(true);
+            Transform circulo = unidad.transform.Find("SeleccionVisual");
+            if (circulo != null) circulo.gameObject.SetActive(true);
+        }
     }
 
     private void DeseleccionarUnidad(GameObject unidad)
     {
         unidadesSeleccionadas.Remove(unidad);
         ModificarEscalaMaterial(unidad, escalaNormal);
+
+        if (unidad.TryGetComponent<Base>(out var baseScript))
+        {
+            baseScript.MostrarUI(false);
+            Transform circulo = unidad.transform.Find("SeleccionVisual");
+            if (circulo != null) circulo.gameObject.SetActive(false);
+        }
     }
 
     private void DeseleccionarTodasLasUnidades()
@@ -163,6 +181,13 @@ public class Controlador_Interaccion : MonoBehaviour
         foreach (GameObject unidad in unidadesSeleccionadas)
         {
             ModificarEscalaMaterial(unidad, escalaNormal);
+
+            if (unidad.TryGetComponent<Base>(out var baseScript))
+            {
+                baseScript.MostrarUI(false);
+                Transform circulo = unidad.transform.Find("SeleccionVisual");
+                if (circulo != null) circulo.gameObject.SetActive(false);
+            }
         }
         unidadesSeleccionadas.Clear();
     }

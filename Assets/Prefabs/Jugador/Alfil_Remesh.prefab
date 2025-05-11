@@ -151,6 +151,7 @@ MonoBehaviour:
   rangoAtaque: 1.5
   rangoAlerta: 10
   rangoPersecucionMaxima: 8
-  basePropia: {fileID: 4569393541734260330, guid: 63cf08285cfc5c04ca8e43659ebd2d71, type: 3}
+  basePropia: {fileID: 3562110755745031129, guid: efc23987f08da85438c7a3ddc2af988f, type: 3}
+  baseEnemiga: {fileID: 3562110755745031129, guid: 4cba2e9d06b8343429939feb8df9804b, type: 3}
   esJugador: 1
   estadoActual: 2

@@ -7,11 +7,14 @@ public class GameManager : MonoBehaviour
 
     [Header("Recursos")]
     public int recursosJugador = 0;
-    public int Recursos => recursosJugador; // ✅ Propiedad para acceso externo
+    public int Recursos => recursosJugador;
 
-    [Header("Unidades")]
-    public int limiteUnidades = 30;
-    private List<GameObject> unidadesEnJuego = new();
+    [Header("Unidades y límites")]
+    public int limiteUnidadesJugador = 30;
+    public int limiteUnidadesEnemigo = 30;
+
+    private List<GameObject> unidadesJugador = new();
+    private List<GameObject> unidadesEnemigo = new();
 
     [Header("Costos por tipo de unidad")]
     public int costoRey = 50;
@@ -40,15 +43,38 @@ public class GameManager : MonoBehaviour
         if (recursosJugador < 0) recursosJugador = 0;
     }
 
-    public bool PuedeCrearUnidad()
+    public bool PuedeCrearUnidad(bool esJugador)
     {
-        unidadesEnJuego.RemoveAll(obj => obj == null);
-        return unidadesEnJuego.Count < limiteUnidades;
+        if (esJugador)
+        {
+            unidadesJugador.RemoveAll(obj => obj == null);
+            return unidadesJugador.Count < limiteUnidadesJugador;
+        }
+        else
+        {
+            unidadesEnemigo.RemoveAll(obj => obj == null);
+            return unidadesEnemigo.Count < limiteUnidadesEnemigo;
+        }
     }
 
+    public void RegistrarUnidad(GameObject unidad, bool esJugador)
+    {
+        if (esJugador)
+            unidadesJugador.Add(unidad);
+        else
+            unidadesEnemigo.Add(unidad);
+    }
+
+    // Versión anterior por compatibilidad si ya usas esta firma en otras partes
     public void RegistrarUnidad(GameObject unidad)
     {
-        unidadesEnJuego.Add(unidad);
+        bool esJugador = true;
+
+        if (unidad.TryGetComponent(out Rey r)) esJugador = r.esJugador;
+        else if (unidad.TryGetComponent(out Alfil a)) esJugador = a.esJugador;
+        else if (unidad.TryGetComponent(out Reina q)) esJugador = q.esJugador;
+
+        RegistrarUnidad(unidad, esJugador);
     }
 
     public int GetCostoUnidad(int tipo)
