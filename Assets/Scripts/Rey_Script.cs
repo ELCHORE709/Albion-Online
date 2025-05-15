@@ -105,6 +105,14 @@ public class Rey : MonoBehaviour
         {
             objetivo = masCercano;
         }
+        else if (baseEnemiga != null)
+        {
+            float distBase = Vector3.Distance(transform.position, baseEnemiga.transform.position);
+            if (distBase <= rangoAlerta)
+            {
+                objetivo = baseEnemiga;
+            }
+        }
     }
 
     Vector3 ObtenerPuntoCercaDeBase(float rango)

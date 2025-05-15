@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using UnityEngine.EventSystems; // ✅ Para detectar clics sobre UI
+using UnityEngine.EventSystems; // ✅ Necesario para detectar clics sobre la UI
 
 public class Controlador_Interaccion : MonoBehaviour
 {
@@ -62,7 +62,7 @@ public class Controlador_Interaccion : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame)
             CambiarEstadoSeleccionados(EstadoUnidad.Defensa);
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !Keyboard.current.shiftKey.isPressed && !EventSystem.current.IsPointerOverGameObject())
+        if (Mouse.current.leftButton.wasPressedThisFrame && !Keyboard.current.shiftKey.isPressed && !EstaElMouseSobreUI())
         {
             seleccionando = true;
             inicioCaja = Mouse.current.position.ReadValue();
@@ -90,7 +90,7 @@ public class Controlador_Interaccion : MonoBehaviour
 
     private void OnClick(InputAction.CallbackContext context)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return; // ✅ Bloquear selección si se hizo clic en UI
+        if (EstaElMouseSobreUI()) return;
 
         if (Time.time - tiempoUltimoClick < delayClick)
         {
@@ -130,7 +130,7 @@ public class Controlador_Interaccion : MonoBehaviour
 
     private void OnMoverClick(InputAction.CallbackContext context)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return; // ✅ Bloquear movimiento si se hizo clic en UI
+        if (EstaElMouseSobreUI()) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
@@ -278,6 +278,11 @@ public class Controlador_Interaccion : MonoBehaviour
             if (unidad.TryGetComponent<Alfil>(out var alfil) && alfil.esJugador) alfil.CambiarEstado(nuevoEstado);
             if (unidad.TryGetComponent<Reina>(out var reina) && reina.esJugador) reina.CambiarEstado(nuevoEstado);
         }
+    }
+
+    private bool EstaElMouseSobreUI()
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(Mouse.current?.deviceId ?? -1);
     }
 
     private void OnDestroy()

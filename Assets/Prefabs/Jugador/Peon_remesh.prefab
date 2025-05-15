@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 134837260526862130}
   - component: {fileID: 2771506670205866471}
   - component: {fileID: 1429792135694209080}
-  - component: {fileID: -4708706535295757262}
   - component: {fileID: -256242476053578164}
   m_Layer: 6
   m_Name: Peon_remesh
@@ -134,21 +133,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0054560294, y: 0.0107834805, z: 0.0053592697}
   m_Center: {x: -0.0000013449462, y: 0.000030569965, z: -0.0000052249525}
---- !u!114 &-4708706535295757262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4268674085665110632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3daceb25bc55d3e418d61b29b763b081, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vida: 100
-  velocidad: 3
-  esJugador: 1
 --- !u!54 &-256242476053578164
 Rigidbody:
   m_ObjectHideFlags: 0

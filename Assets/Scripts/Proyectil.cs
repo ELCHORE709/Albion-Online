@@ -1,15 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Proyectil : MonoBehaviour
 {
     private Vector3 direccion;
-    private float da�o;
+    private float daño;
     private GameObject objetivo;
 
-    public void Inicializar(Vector3 dir, float da�o, GameObject objetivo)
+    public void Inicializar(Vector3 dir, float daño, GameObject objetivo)
     {
         this.direccion = dir;
-        this.da�o = da�o;
+        this.daño = daño;
         this.objetivo = objetivo;
         Destroy(gameObject, 5f);
     }
@@ -20,7 +20,7 @@ public class Proyectil : MonoBehaviour
 
         if (objetivo != null && Vector3.Distance(transform.position, objetivo.transform.position) < 0.5f)
         {
-            objetivo.SendMessage("RecibirDa�o", da�o, SendMessageOptions.DontRequireReceiver);
+            objetivo.SendMessage("RecibirDaño", daño, SendMessageOptions.DontRequireReceiver);
             Destroy(gameObject);
         }
     }

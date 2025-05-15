@@ -103,4 +103,11 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 0f;
     }
+
+    public int GetCantidadUnidadesJugador()
+    {
+        unidadesJugador.RemoveAll(obj => obj == null);
+        return unidadesJugador.Count;
+    }
+
 }

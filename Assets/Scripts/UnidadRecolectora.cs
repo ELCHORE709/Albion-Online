@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Peon : MonoBehaviour
@@ -32,5 +32,10 @@ public class Peon : MonoBehaviour
                 GameManager.instancia.AgregarRecursos(2);
             }
         }
+    }
+
+    public bool EstaRecolectando()
+    {
+        return nodoActual != null;
     }
 }
