@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 7761659179566537039}
   - component: {fileID: 6844425296120486237}
   - component: {fileID: 2117367006417274446}
+  - component: {fileID: 8383406394199366085}
+  - component: {fileID: 7608113662403370136}
   m_Layer: 0
   m_Name: Alfil_Remesh_Enemi
   m_TagString: Unidad
@@ -145,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vida: 100
-  "da\xF1o": 10
+  "da\xF1o": 20
   velocidad: 5
   rangoAtaque: 1.5
   rangoAlerta: 10
@@ -154,3 +156,51 @@ MonoBehaviour:
   baseEnemiga: {fileID: 3562110755745031129, guid: efc23987f08da85438c7a3ddc2af988f, type: 3}
   esJugador: 0
   estadoActual: 1
+--- !u!65 &8383406394199366085
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813058831429308132}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.006, y: 0.011, z: 0.006}
+  m_Center: {x: 0.0000030549709, y: 0.000010909978, z: -0.0000036549754}
+--- !u!54 &7608113662403370136
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813058831429308132}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

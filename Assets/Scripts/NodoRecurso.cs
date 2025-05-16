@@ -31,7 +31,20 @@ public class NodoRecurso : MonoBehaviour
     public bool Extraer(int cantidad)
     {
         if (this.cantidad < cantidad) return false;
+
         this.cantidad -= cantidad;
+
+        if (this.cantidad <= 0)
+        {
+            foreach (var peon in recolectores)
+            {
+                if (peon != null)
+                    peon.DetenerRecoleccion();
+            }
+
+            Destroy(gameObject);
+        }
+
         return true;
     }
 }

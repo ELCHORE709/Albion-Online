@@ -145,10 +145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2771e32fc39d54d8ea7a8131f24aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vida: 80
-  "da\xF1o": 20
+  vida: 60
+  "da\xF1o": 10
   velocidad: 3
-  rangoDisparo: 8
+  rangoDisparo: 6
   rangoAlerta: 10
   rangoPersecucionMaxima: 8
   distanciaMinimaSegura: 5
@@ -158,6 +158,7 @@ MonoBehaviour:
   puntoDisparo: {fileID: 8673582090792401649}
   esJugador: 0
   estadoActual: 1
+  intervaloEntreDisparos: 2
 --- !u!1 &8537456412416026108
 GameObject:
   m_ObjectHideFlags: 0

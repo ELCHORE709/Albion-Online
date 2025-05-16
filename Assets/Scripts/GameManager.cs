@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
     public void AgregarRecursos(int cantidad)
     {
         recursosJugador += cantidad;
-        Debug.Log("Recursos: " + recursosJugador);
     }
 
     public void RestarRecursos(int cantidad)
@@ -65,7 +64,6 @@ public class GameManager : MonoBehaviour
             unidadesEnemigo.Add(unidad);
     }
 
-    // Versión anterior por compatibilidad si ya usas esta firma en otras partes
     public void RegistrarUnidad(GameObject unidad)
     {
         bool esJugador = true;
@@ -92,12 +90,10 @@ public class GameManager : MonoBehaviour
     {
         if (baseEraDelJugador)
         {
-            Debug.Log("❌ Has perdido");
             if (pantallaDerrota != null) pantallaDerrota.SetActive(true);
         }
         else
         {
-            Debug.Log("🏆 Has ganado");
             if (pantallaVictoria != null) pantallaVictoria.SetActive(true);
         }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using UnityEngine.EventSystems; // ✅ Necesario para detectar clics sobre la UI
+using UnityEngine.EventSystems;
 
 public class Controlador_Interaccion : MonoBehaviour
 {
@@ -94,7 +94,7 @@ public class Controlador_Interaccion : MonoBehaviour
 
         if (Time.time - tiempoUltimoClick < delayClick)
         {
-            Debug.Log("⛔ Ignorando clic duplicado (demasiado rápido)");
+            Debug.Log("Ignorando clic duplicado");
             return;
         }
 

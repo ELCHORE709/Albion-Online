@@ -20,28 +20,68 @@ public class Alfil : MonoBehaviour
     private float tiempoEspera = 2f;
     private float rangoPatrulla = 10f;
 
+    private float tiempoProximaDefensa;
+    private float intervaloDefensa = 2f;
+    private float rangoDefensa = 6f;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = velocidad;
         InvokeRepeating(nameof(DetectarObjetivo), 0f, 1f);
 
-        if (!esJugador && baseEnemiga == null)
+        foreach (var b in GameObject.FindGameObjectsWithTag("Base"))
         {
-            foreach (var b in GameObject.FindGameObjectsWithTag("Base"))
-            {
-                if (b.GetComponent<Base>().esJugador)
-                {
-                    baseEnemiga = b;
-                    break;
-                }
-            }
+            var baseScript = b.GetComponent<Base>();
+            if (baseScript == null) continue;
+
+            if (baseScript.esJugador == esJugador)
+                basePropia = b;
+            else
+                baseEnemiga = b;
         }
     }
 
     void Update()
     {
-        if (estadoActual == EstadoUnidad.Defensa) return;
+        if (estadoActual == EstadoUnidad.Defensa)
+        {
+            if (objetivo == null)
+            {
+                DetectarObjetivo();
+
+                if (Time.time > tiempoProximaDefensa && basePropia != null)
+                {
+                    Vector3 punto = basePropia.transform.position + Random.insideUnitSphere * rangoDefensa;
+                    punto.y = transform.position.y;
+
+                    if (NavMesh.SamplePosition(punto, out NavMeshHit hit, rangoDefensa, NavMesh.AllAreas))
+                    {
+                        agent.SetDestination(hit.position);
+                    }
+
+                    tiempoProximaDefensa = Time.time + intervaloDefensa;
+                }
+            }
+            else
+            {
+                float dist = Vector3.Distance(transform.position, objetivo.transform.position);
+
+                if (dist > rangoAtaque)
+                {
+                    Vector3 destino = objetivo.transform.position;
+                    destino.y = transform.position.y;
+                    agent.SetDestination(destino);
+                }
+                else if (!objetivo.TryGetComponent<Base>(out _))
+                {
+                    agent.ResetPath();
+                    objetivo.SendMessage("RecibirDaño", daño * Time.deltaTime, SendMessageOptions.DontRequireReceiver);
+                }
+            }
+
+            return;
+        }
 
         if ((estadoActual == EstadoUnidad.Ataque || estadoActual == EstadoUnidad.Patrulla) && objetivo != null)
         {
@@ -54,15 +94,22 @@ public class Alfil : MonoBehaviour
                 return;
             }
 
-            agent.SetDestination(objetivo.transform.position);
-
-            if (dist <= rangoAtaque)
+            if (dist > rangoAtaque)
             {
-                objetivo.SendMessage("RecibirDaño", daño * Time.deltaTime, SendMessageOptions.DontRequireReceiver);
+                Vector3 destino = objetivo.transform.position;
+                destino.y = transform.position.y;
+                agent.SetDestination(destino);
+            }
+            else
+            {
+                if (!objetivo.TryGetComponent<Base>(out _))
+                {
+                    agent.ResetPath();
+                    objetivo.SendMessage("RecibirDaño", daño * Time.deltaTime, SendMessageOptions.DontRequireReceiver);
+                }
             }
         }
-
-        if (estadoActual == EstadoUnidad.Patrulla && !esJugador && objetivo == null && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
+        else if (estadoActual == EstadoUnidad.Patrulla && !esJugador && objetivo == null && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
         {
             Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
             agent.SetDestination(destino);
@@ -71,7 +118,9 @@ public class Alfil : MonoBehaviour
 
         if (estadoActual == EstadoUnidad.Ataque && objetivo == null && baseEnemiga != null)
         {
-            agent.SetDestination(baseEnemiga.transform.position);
+            Vector3 destino = baseEnemiga.transform.position;
+            destino.y = transform.position.y;
+            agent.SetDestination(destino);
         }
     }
 
@@ -115,6 +164,17 @@ public class Alfil : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.TryGetComponent<Base>(out var baseObjetivo))
+        {
+            if (baseObjetivo.esJugador != esJugador)
+            {
+                baseObjetivo.RecibirDaño(daño * Time.deltaTime);
+            }
+        }
+    }
+
     Vector3 ObtenerPuntoCercaDeBase(float rango)
     {
         if (basePropia == null) return transform.position;
@@ -126,9 +186,31 @@ public class Alfil : MonoBehaviour
 
     public void CambiarEstado(EstadoUnidad nuevoEstado)
     {
-        if (!esJugador) return;
         estadoActual = nuevoEstado;
-        Debug.Log($"{gameObject.name} cambió a estado: {estadoActual}");
+
+        if (estadoActual == EstadoUnidad.Ataque)
+        {
+            objetivo = null;
+            DetectarObjetivo();
+            if (objetivo != null)
+            {
+                Vector3 destino = objetivo.transform.position;
+                destino.y = transform.position.y;
+                agent.SetDestination(destino);
+            }
+        }
+        else if (estadoActual == EstadoUnidad.Patrulla)
+        {
+            objetivo = null;
+            Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
+            agent.SetDestination(destino);
+            tiempoProximaPatrulla = Time.time + tiempoEspera;
+        }
+        else if (estadoActual == EstadoUnidad.Defensa)
+        {
+            objetivo = null;
+            tiempoProximaDefensa = Time.time + intervaloDefensa;
+        }
     }
 
     public void RecibirDaño(float cantidad)

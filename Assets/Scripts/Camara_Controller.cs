@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CamaraController : MonoBehaviour
@@ -11,58 +11,59 @@ public class CamaraController : MonoBehaviour
     private Transform pitch;
     private Transform camaraTransform;
 
-    [Header("Configuración de movimiento")]
+    [Header("ConfiguraciÃ³n de movimiento")]
     public float velocidadMovimiento = 5f;
     public float velocidadRotacion = 100f;
 
-    [Header("Configuración de zoom")]
+    [Header("ConfiguraciÃ³n de zoom")]
     public float velocidadZoom = 10f;
     public float minZoom = 5f;
     public float maxZoom = 50f;
 
+    [Header("LÃ­mites del mapa")]
+    public Vector2 limitesX = new Vector2(91.49598f, 901.3017f);
+    public Vector2 limitesZ = new Vector2(238.9575f, 780.7451f);
+
+    [Header("PosiciÃ³n inicial")]
+    public Vector3 posicionInicial = new Vector3(744.7f, 2.9f, 396.2f);
+
     void Start()
     {
+        transform.position = posicionInicial;
+
         movimiento = InputSystem.actions?.FindAction("Movimiento");
         rotacion = InputSystem.actions?.FindAction("Rotacion");
         zoom = InputSystem.actions?.FindAction("Zoom");
 
         if (movimiento == null || rotacion == null || zoom == null)
         {
-            Debug.LogError("No se encontraron las acciones de entrada. Verifica el Input Action Asset.");
         }
 
         yaw = transform.Find("Yaw");
-        if (yaw == null)
-        {
-            Debug.LogError("No se encontró el objeto 'Yaw'. Asegúrate de que existe como hijo del GameObject.");
-        }
+        pitch = yaw?.Find("Pitch");
+        camaraTransform = pitch?.Find("Camera");
 
-        pitch = yaw.Find("Pitch");
-        if (pitch == null)
+        if (!yaw || !pitch || !camaraTransform)
         {
-            Debug.LogError("No se encontró el objeto 'Pitch'. Asegúrate de que existe como hijo de 'Yaw'.");
-        }
-
-        camaraTransform = pitch.Find("Camera");
-        if (camaraTransform == null)
-        {
-            Debug.LogError("No se encontró la cámara como hijo de 'Pitch'. Asegúrate de que existe y se llama 'Camera'.");
         }
     }
 
     void Update()
     {
         if (movimiento == null || rotacion == null || zoom == null || yaw == null || pitch == null || camaraTransform == null)
-        {
             return;
-        }
 
         Vector2 vectorMovimiento = movimiento.ReadValue<Vector2>();
         float cambioRotacion = rotacion.ReadValue<float>();
         float cambioZoom = zoom.ReadValue<float>();
 
         Vector3 movimientoRotado = yaw.rotation * new Vector3(vectorMovimiento.x, 0, vectorMovimiento.y);
-        transform.Translate(movimientoRotado * velocidadMovimiento * Time.deltaTime, Space.World);
+        Vector3 nuevaPosicion = transform.position + movimientoRotado * velocidadMovimiento * Time.deltaTime;
+
+        nuevaPosicion.x = Mathf.Clamp(nuevaPosicion.x, limitesX.x, limitesX.y);
+        nuevaPosicion.z = Mathf.Clamp(nuevaPosicion.z, limitesZ.x, limitesZ.y);
+
+        transform.position = nuevaPosicion;
 
         yaw.Rotate(0, cambioRotacion * velocidadRotacion * Time.deltaTime, 0);
 

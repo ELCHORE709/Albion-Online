@@ -22,6 +22,13 @@ public class Base : MonoBehaviour
     public Button botonCrearAlfil;
     public Button botonCrearReina;
 
+    [Header("Visual de Selección")]
+    public GameObject seleccionVisual;
+
+    [Header("Barra visual de vida")]
+    public Transform barraVisual; 
+    public float anchoOriginal = 1f; 
+
     private float tiempoUltimaCreacion = -999f;
 
     void Start()
@@ -34,6 +41,12 @@ public class Base : MonoBehaviour
             botonCrearAlfil.onClick.AddListener(() => CrearUnidadJugador(prefabAlfil, GameManager.instancia.costoAlfil));
             botonCrearReina.onClick.AddListener(() => CrearUnidadJugador(prefabReina, GameManager.instancia.costoReina));
         }
+
+        if (seleccionVisual != null)
+            seleccionVisual.SetActive(false);
+
+        if (barraVisual != null)
+            anchoOriginal = barraVisual.localScale.x;
     }
 
     void Update()
@@ -74,6 +87,15 @@ public class Base : MonoBehaviour
     public void RecibirDaño(float cantidad)
     {
         vida -= cantidad;
+
+        if (barraVisual != null)
+        {
+            float factor = Mathf.Clamp01(vida / 10000f);
+            Vector3 escala = barraVisual.localScale;
+            escala.x = anchoOriginal * factor;
+            barraVisual.localScale = escala;
+        }
+
         if (vida <= 0)
         {
             GameManager.instancia.BaseDestruida(esJugador);
@@ -86,8 +108,7 @@ public class Base : MonoBehaviour
         if (esJugador && panelBotones != null)
             panelBotones.SetActive(mostrar);
 
-        Transform circulo = transform.Find("SeleccionVisual");
-        if (circulo != null)
-            circulo.gameObject.SetActive(mostrar);
+        if (seleccionVisual != null)
+            seleccionVisual.SetActive(mostrar);
     }
 }

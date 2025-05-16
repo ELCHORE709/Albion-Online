@@ -22,30 +22,79 @@ public class Reina : MonoBehaviour
     private float tiempoProximaPatrulla;
     private float tiempoEspera = 2f;
     private float rangoPatrulla = 10f;
+    private float tiempoUltimoDisparo = -999f;
+    public float intervaloEntreDisparos = 1f;
+
+    private float tiempoProximaDefensa;
+    private float intervaloDefensa = 2f;
+    private float rangoDefensa = 6f;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = velocidad;
         InvokeRepeating(nameof(DetectarObjetivo), 0f, 1f);
-        InvokeRepeating(nameof(Disparar), 0.5f, 1f);
 
-        if (!esJugador && baseEnemiga == null)
+        foreach (var b in GameObject.FindGameObjectsWithTag("Base"))
         {
-            foreach (var b in GameObject.FindGameObjectsWithTag("Base"))
-            {
-                if (b.GetComponent<Base>().esJugador)
-                {
-                    baseEnemiga = b;
-                    break;
-                }
-            }
+            var baseScript = b.GetComponent<Base>();
+            if (baseScript == null) continue;
+
+            if (baseScript.esJugador == esJugador)
+                basePropia = b;
+            else
+                baseEnemiga = b;
         }
     }
 
     void Update()
     {
-        if (estadoActual == EstadoUnidad.Defensa) return;
+        if (estadoActual == EstadoUnidad.Defensa)
+        {
+            if (objetivo == null)
+            {
+                DetectarObjetivo();
+
+                if (Time.time > tiempoProximaDefensa && basePropia != null)
+                {
+                    Vector3 punto = basePropia.transform.position + Random.insideUnitSphere * rangoDefensa;
+                    punto.y = transform.position.y;
+
+                    if (NavMesh.SamplePosition(punto, out NavMeshHit hit, rangoDefensa, NavMesh.AllAreas))
+                    {
+                        agent.SetDestination(hit.position);
+                    }
+
+                    tiempoProximaDefensa = Time.time + intervaloDefensa;
+                }
+            }
+            else
+            {
+                float dist = Vector3.Distance(transform.position, objetivo.transform.position);
+
+                if (dist > rangoDisparo)
+                {
+                    Vector3 destino = objetivo.transform.position;
+                    destino.y = transform.position.y;
+                    agent.SetDestination(destino);
+                }
+                else if (dist < distanciaMinimaSegura)
+                {
+                    Vector3 alejamiento = (transform.position - objetivo.transform.position).normalized;
+                    Vector3 nuevoDestino = transform.position + alejamiento * 3f;
+                    nuevoDestino.y = transform.position.y;
+                    agent.SetDestination(nuevoDestino);
+                }
+                else
+                {
+                    agent.ResetPath();
+                }
+
+                Disparar();
+            }
+
+            return;
+        }
 
         if ((estadoActual == EstadoUnidad.Ataque || estadoActual == EstadoUnidad.Patrulla) && objetivo != null)
         {
@@ -60,20 +109,25 @@ public class Reina : MonoBehaviour
 
             if (dist > rangoDisparo)
             {
-                agent.SetDestination(objetivo.transform.position);
+                Vector3 destino = objetivo.transform.position;
+                destino.y = transform.position.y;
+                agent.SetDestination(destino);
             }
             else if (dist < distanciaMinimaSegura)
             {
                 Vector3 alejamiento = (transform.position - objetivo.transform.position).normalized;
                 Vector3 nuevoDestino = transform.position + alejamiento * 3f;
+                nuevoDestino.y = transform.position.y;
                 agent.SetDestination(nuevoDestino);
             }
             else
             {
                 agent.ResetPath();
             }
+
+            Disparar();
         }
-        else if (estadoActual == EstadoUnidad.Patrulla && !esJugador && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
+        else if (estadoActual == EstadoUnidad.Patrulla && !esJugador && objetivo == null && Time.time > tiempoProximaPatrulla && agent.remainingDistance < 1f)
         {
             Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
             agent.SetDestination(destino);
@@ -82,13 +136,15 @@ public class Reina : MonoBehaviour
 
         if (estadoActual == EstadoUnidad.Ataque && objetivo == null && baseEnemiga != null)
         {
-            agent.SetDestination(baseEnemiga.transform.position);
+            Vector3 destino = baseEnemiga.transform.position;
+            destino.y = transform.position.y;
+            agent.SetDestination(destino);
         }
     }
 
     void DetectarObjetivo()
     {
-        if (estadoActual == EstadoUnidad.Defensa || objetivo != null) return;
+        if (objetivo != null || estadoActual == EstadoUnidad.Defensa) return;
 
         GameObject masCercano = null;
         float minDist = Mathf.Infinity;
@@ -130,14 +186,22 @@ public class Reina : MonoBehaviour
     {
         if (objetivo == null) return;
 
-        float dist = Vector3.Distance(transform.position, objetivo.transform.position);
-        if (dist <= rangoDisparo)
-        {
-            Vector3 dir = (objetivo.transform.position - transform.position).normalized;
-            Vector3 spawnPos = puntoDisparo != null ? puntoDisparo.position : transform.position + dir;
+        if (objetivo.TryGetComponent(out Reina q) && q.esJugador == esJugador) return;
+        if (objetivo.TryGetComponent(out Rey r) && r.esJugador == esJugador) return;
+        if (objetivo.TryGetComponent(out Alfil a) && a.esJugador == esJugador) return;
+        if (objetivo.TryGetComponent(out Base b) && b.esJugador == esJugador) return;
 
+        float dist = Vector3.Distance(transform.position, objetivo.transform.position);
+
+        if (dist <= rangoDisparo && Time.time - tiempoUltimoDisparo >= intervaloEntreDisparos)
+        {
+            Vector3 objetivoOffset = objetivo.transform.position + Vector3.down * 0.5f;
+            Vector3 dir = (objetivoOffset - transform.position).normalized;
+            Vector3 spawnPos = puntoDisparo != null ? puntoDisparo.position : transform.position + dir;
             GameObject bala = Instantiate(proyectilPrefab, spawnPos, Quaternion.identity);
-            bala.GetComponent<Proyectil>().Inicializar(dir, daño, objetivo);
+            bala.GetComponent<Proyectil>().Inicializar(dir, daño, objetivo, gameObject);
+
+            tiempoUltimoDisparo = Time.time;
         }
     }
 
@@ -152,9 +216,31 @@ public class Reina : MonoBehaviour
 
     public void CambiarEstado(EstadoUnidad nuevoEstado)
     {
-        if (!esJugador) return;
         estadoActual = nuevoEstado;
-        Debug.Log($"{gameObject.name} cambió a estado: {estadoActual}");
+
+        if (estadoActual == EstadoUnidad.Ataque)
+        {
+            objetivo = null;
+            DetectarObjetivo();
+            if (objetivo != null)
+            {
+                Vector3 destino = objetivo.transform.position;
+                destino.y = transform.position.y;
+                agent.SetDestination(destino);
+            }
+        }
+        else if (estadoActual == EstadoUnidad.Patrulla)
+        {
+            objetivo = null;
+            Vector3 destino = ObtenerPuntoCercaDeBase(rangoPatrulla);
+            agent.SetDestination(destino);
+            tiempoProximaPatrulla = Time.time + tiempoEspera;
+        }
+        else if (estadoActual == EstadoUnidad.Defensa)
+        {
+            objetivo = null;
+            tiempoProximaDefensa = Time.time + intervaloDefensa;
+        }
     }
 
     public void RecibirDaño(float cantidad)
