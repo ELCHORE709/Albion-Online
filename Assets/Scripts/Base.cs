@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Base : MonoBehaviour
 {
@@ -21,13 +22,14 @@ public class Base : MonoBehaviour
     public Button botonCrearRey;
     public Button botonCrearAlfil;
     public Button botonCrearReina;
+    public TextMeshProUGUI textoCooldown;
 
     [Header("Visual de Selección")]
     public GameObject seleccionVisual;
 
     [Header("Barra visual de vida")]
-    public Transform barraVisual; 
-    public float anchoOriginal = 1f; 
+    public Transform barraVisual;
+    public float anchoOriginal = 1f;
 
     private float tiempoUltimaCreacion = -999f;
 
@@ -58,6 +60,10 @@ public class Base : MonoBehaviour
                 CrearUnidadAleatoria();
                 tiempoUltimaCreacion = Time.time;
             }
+        }
+        else
+        {
+            ActualizarTextoCooldown();
         }
     }
 
@@ -110,5 +116,13 @@ public class Base : MonoBehaviour
 
         if (seleccionVisual != null)
             seleccionVisual.SetActive(mostrar);
+    }
+
+    void ActualizarTextoCooldown()
+    {
+        if (textoCooldown == null) return;
+
+        float restante = Mathf.Clamp(tiempoEntreUnidades - (Time.time - tiempoUltimaCreacion), 0f, tiempoEntreUnidades);
+        textoCooldown.text = restante > 0f ? $"Espera: {restante:F1}s" : "";
     }
 }
